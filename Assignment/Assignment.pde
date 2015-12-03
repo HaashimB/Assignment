@@ -1,11 +1,21 @@
+import ddf.minim.spi.*;
+import ddf.minim.signals.*;
+import ddf.minim.*;
+import ddf.minim.analysis.*;
+import ddf.minim.ugens.*;
+import ddf.minim.effects.*;
+
 /*Steam Statistics - Programming Assignment
 */
-
+Minim minim;
+AudioPlayer player;
 void setup()
 {
   size(1360,700,P3D);
   smooth(4);
   font = loadFont("Tahoma-72.vlw");
+  minim = new Minim(this);
+  musicFile = "steam_music.mp3";
   
   playerData = new ArrayList<Circle_Data>();
   readInCircleData();
@@ -25,13 +35,20 @@ void setup()
     g[i] = random(0,255);
     b[i] = random(0,255);
   }
+  
+  steam = loadImage("steam.jpg");
+  
   circleColor = color(255);
   circleX = width/2;
   circleY = height/2+150;
   ellipseMode(CENTER);
-  steam = loadImage("steam.jpg");
+  
+
 }
+
 PFont font;
+
+
 ArrayList<Circle_Data> playerData;
 int linesGlobal;
 int screen = 1;
@@ -41,21 +58,26 @@ float[] r;
 float[] g;
 float[] b;
 float x,y,z;
+PImage steam;
 
 int circleX, circleY;  // Position of circle button  
 int circleSize = 93;   // Diameter of circle
 color circleColor,circleOutline;
 boolean circleOver = false;
-PImage steam;
+boolean[] onCircle = new boolean[10];
+
+String musicFile;
+Music music = new Music();
 void draw()
 {
   update(mouseX, mouseY);
+  
   background(255);
   if (screen == 1)
   {
     image(steam,0,0);
     steam.resize(width, height);
-    
+    musicPlay(musicFile);
     textAlign(CENTER);
     textFont(font);
     fill(200,230,255);
@@ -73,7 +95,7 @@ void draw()
     } 
     else 
     {
-      circleColor = color(200,230,255);
+      circleColor = color(215,230,240);
       circleOutline = color(0,100,230);
     }
   
@@ -83,13 +105,14 @@ void draw()
   }
   if (screen == 0)
   {
-   
+    update1(mouseX, mouseY);
     translate(x,y,z);
     for(int i = 0;i<linesGlobal;i++)
     {
       fill(r[i],g[i],b[i]);
-      
-      ellipse(locationx[i],locationy[i],playerData.get(i).players/1000,playerData.get(i).players/1000);
+      noStroke();
+      ellipse(locationx[i],locationy[i],playerData.get(i).players/10000,playerData.get(i).players/10000);
+
       
     }
   }
@@ -161,14 +184,57 @@ void update(int x, int y)
   {
     circleOver = false;
   }
+ 
 }
 
-boolean overCircle(int x, int y, int diameter) {
+boolean overCircle(int x, int y, int diameter)
+{
   float disX = x - mouseX;
   float disY = y - mouseY;
-  if(sqrt(sq(disX) + sq(disY)) < diameter/2 ) {
+  if(sqrt(sq(disX) + sq(disY)) < diameter/2 ) 
+  {
     return true;
-  } else {
+  } 
+  else
+  {
     return false;
   }
+} 
+
+void update1(int x, int y) 
+{
+ boolean circleChecker = false;
+  for(int i = 0; i<linesGlobal; i++)
+  {
+    circleChecker = overCircle1(locationx[i],locationy[i],playerData.get(i).players/10000);
+    if(circleChecker)
+    {
+      onCircle[i] = true;
+    }
+    else
+    {
+      onCircle[i] = false;
+    }
+  }
+}
+
+boolean overCircle1(float x, float y, float diameter)
+{
+  float disX = x - mouseX;
+  float disY = y - mouseY;
+  if(sqrt(sq(disX) + sq(disY)) < diameter/2 ) 
+  {
+    return true;
+  } 
+  else
+  {
+    return false;
+  }
+} 
+void musicPlay(String musicAddress)
+{
+  
+  player = minim.loadFile(musicAddress, 2048);
+  player.play();
+ 
 }

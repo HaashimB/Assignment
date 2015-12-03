@@ -16,7 +16,7 @@ class Circle_Location
         }
       }
     }
-    for(int i = 0;i<checker;i++)//for loop to check circles are in unique y locations
+    for(int i = 0;i<10;i++)//for loop to check circles are in unique y locations
     {
       locy[i] = random(0,height);
       for(int j = 0;j < i;j++)
@@ -29,4 +29,5 @@ class Circle_Location
     }
      
     
-    
+  }
+}
