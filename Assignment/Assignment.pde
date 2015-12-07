@@ -34,16 +34,16 @@ void setup()
   steam = loadImage("steam.jpg");
   h3 = loadImage("h3.jpg");
   circleColor = color(255);
-  circleX = width*0.5;
+  circleX = width*0.6;
   circleY = height*0.8;
-  circleA = width*0.3;
+  circleA = width*0.4;
   circleB = height*0.8;
   ellipseMode(CENTER);
 }
+//initialise variables
+PFont font;//font variable
 
-PFont font;
-
-ArrayList<Circle_Data> playerData;
+ArrayList<Circle_Data> playerData;//array list to hold steam data
 int linesGlobal;
 int screen = 0;
 int game = 10;
@@ -53,15 +53,19 @@ float[] r;
 float[] g;
 float[] b;
 float x, y, z;
+//image variables
 PImage steam, h3;
 PImage pic;
+
 float screenSize;
+//main menu button variables
 float circleX, circleA;
 float circleY, circleB;  // Position of circle button  
 int circleSize = 93;   // Diameter of circle
 int circleSize1 = 93;
-color circleColor, circleColor1, circleColor2, circleOutline, circleOutline2;
-boolean circleOver, circleOver1;
+color circleColor, circleColor1, circleColor2, circleOutline, circleOutline2;//variables for circle colours in main menu
+boolean circleOver, circleOver1;//variable to check if mouse is over circles in  main menu
+//circle graph variable 
 boolean[] onCircle = new boolean[10];
 int info = 0;
 int infoClose = 0;
@@ -133,16 +137,16 @@ void draw()
     ellipse(circleX, circleY, circleSize, circleSize);
     fill(textcol);
     textSize(20);
-    text("Circle\nGraph", width*0.5, height*0.79);
+    text("Circle\nGraph", width*0.6, height*0.79);
     stroke(circleOutline2);
     fill(circleColor2);
     ellipse(circleA, circleB, circleSize1, circleSize1);
     fill(textcol1);
-    text("Line\nGraph", width*0.3, height*0.79);
+    text("Trend\nLine", width*0.4, height*0.79);
   }
   if (screen == 1)
   {
-    background(100);
+    background(10);
     fill(255);
     textAlign(CENTER);
     textSize(30);
@@ -179,28 +183,57 @@ void draw()
     translate(width-screenSize, 0);
     gameScreen();
     popMatrix();
+
+    if (info == 1)
+    {
+      pushMatrix();
+      translate(-150, -200);
+      infoScreen();
+      popMatrix();
+    }
   }
 
   if (screen == 2)
   {
     player.pause();
     player.rewind();
-    background(100);
+    background(10);
     textSize(30);
     fill(255);
     textAlign(CENTER);
-    text("Top Steam Games By Player Base - Line Graph", width/2, height/25);
+    text("Top Steam Games By Player Base - Trend Line", width/2, height/25);
     textAlign(LEFT);
     textSize(20);
     text("[M] Main Menu", width*0.01, height*0.06);
-  }
 
-  if (info == 1)
-  {
-    pushMatrix();
-    translate(-150, -200);
-    infoScreen();
-    popMatrix();
+
+    for (int i = 0; i < linesGlobal; i ++)
+    {
+      float barWidth = width / 10; 
+      float x = i * barWidth;
+      fill(255);
+      float border = width * 0.1f;
+      drawAxis(playerData.get(i).players, playerData.get(i).titles, 15, 150, border);
+      //rect(x, height, border, - playerData.get(i).players/10000);
+
+      
+
+
+      float windowRange = (width - (border * 2.0f));
+      float dataRange = 3800000;      
+      float lineWidth =  windowRange / (float) (linesGlobal - 1) ;
+
+      float scale = windowRange / dataRange;
+      for (int j = 1; j < linesGlobal; j ++)
+      {
+        float x1 = border + ((j - 1) * lineWidth);
+        float x2 = border + (j * lineWidth);
+        float y1 = (height - border) - (playerData.get(j-1).players) * scale;
+        float y2 = (height - border) - (playerData.get(j).players) * scale;
+        stroke(0, 255, 255);
+        line(x1, y1, x2, y2);
+      }
+    }
   }
 }
 
@@ -216,7 +249,7 @@ void readInCircleData()
     linesGlobal++;
   }
 }
-
+//checks if mouse is over "Circle Graph" in main menu
 void update(int x, int y) 
 {
 
@@ -228,7 +261,7 @@ void update(int x, int y)
     circleOver = false;
   }
 }
-
+//checks if mouse is over "Trend Line" circle in main menu
 void update2(int x, int y) 
 {
 
@@ -240,7 +273,7 @@ void update2(int x, int y)
     circleOver1 = false;
   }
 } 
-
+//algorithm to check if mouse is over circles in main menu
 boolean overCircle(float x, float y, int diameter)
 {
   float disX = x - mouseX;
@@ -253,7 +286,7 @@ boolean overCircle(float x, float y, int diameter)
     return false;
   }
 } 
-
+//checks to see if mouse is over any circles in the circle graph
 void update1(int x, int y) 
 {
   boolean circleChecker = false;
@@ -269,7 +302,7 @@ void update1(int x, int y)
     }
   }
 }
-
+//algorithm to check if mouse is over circles in circle graph
 boolean overCircle1(float x, float y, float diameter)
 {
   float disX = x - mouseX;
@@ -283,8 +316,8 @@ boolean overCircle1(float x, float y, float diameter)
   }
 } 
 
-int soundStart = 0;
-void startMusic()
+int soundStart = 0;//variable to ensure music doesn't play more than once in draw
+void startMusic()//function to start game music when game screen opened in circle graph
 {
   if (soundStart == 0)
   {
@@ -293,7 +326,7 @@ void startMusic()
   }
 }
 
-void stopMusic()
+void stopMusic()//function to stop and rewind game music when game screen closed in circle graph
 {
   if (soundStart == 1)
   {
@@ -302,7 +335,7 @@ void stopMusic()
     soundStart = 0;
   }
 }
-void infoScreen()
+void infoScreen()//function to show information when "I" is pressed in circle graph.
 {
   fill(0);
   rect(width/2-10, height/2-10, 320, 220);
@@ -315,9 +348,9 @@ void infoScreen()
   textAlign(LEFT);
   text("Welcome, each circle represents a different game, the\nbigger the circle, the bigger that game's player base", width/2+10, height/2+60);
   text("Click a circle to see what game it represents.\nPress 'C' to close the game's window.", width/2+10, height/2+90);
-  infoClose = 1;
+  infoClose = 1;//variable to allow I to be pressed again to close info screen after being opened
 }
-void gameScreen()
+void gameScreen()//function to show game screens when circles are clicked in the circle graph
 {
 
 
@@ -511,7 +544,7 @@ void gameScreen()
     text("Warframe is a free-to-play cooperative third-person shooter video game developed by Digital Extremes\nfor Microsoft Windows, PlayStation 4 and Xbox One. Equipment can be earned through gameplay or\nbought with premium currency called Platinum. Most cosmetics and boosts can only be purchased with\npremium currency. The game is free to download and play. In Warframe, players control members of the\nTenno, a race of ancient warriors who have awoken from centuries of cryosleep to find themselves at war\nwith the Grineer, a race of militarized humanoid clones.", width*0.01, height*0.6);
     text("Peak Players: " + playerData.get(9).players, width*0.01, height*0.9);
   } 
-  if (game == 10)
+  if (game == 10)//music stopped if no game screens are opened
   {
     stopMusic();
   }
@@ -521,10 +554,10 @@ void keyPressed()
 {
   if ( screen == 1)
   {
-    if (key == 'i' || key == 'I')
+    if (key == 'i' || key == 'I')//information key
     {
       info = 1;
-      if (infoClose == 1)
+      if (infoClose == 1)//if statement to be able to use "I" to open and close information screen
       {
         info = 0;
         infoClose = 0;
@@ -532,7 +565,7 @@ void keyPressed()
     }
     if (game!=10)
     {
-      if (key == 'c')
+      if (key == 'c')//close game screen key
       {
         game = 10;
       }
@@ -542,11 +575,54 @@ void keyPressed()
   {
     if (infoClose == 0)
     {
-      if (key == 'm')
+      if (key == 'm')//main menu key
       {
         screen = 0;
       }
     }
+  }
+}
+
+void drawAxis(float data, String horizLabels, int verticalIntervals, float vertDataRange, float border)
+{
+  stroke(200, 200, 200);
+  fill(200, 200, 200);  
+
+  // Draw the horizontal azis  
+  line(border, height - border, width - border, height - border);
+
+  float windowRange = (width - (border * 2.0f));  
+  float horizInterval =  windowRange / (linesGlobal-1);
+  float tickSize = border * 0.1f;
+
+
+  for (int i = 0; i < linesGlobal; i ++)
+  {   
+    // Draw the ticks
+    float x = border + (i * horizInterval);
+    line(x, height - (border - tickSize), x, (height - border));
+    float textY = height - (border * 0.8f);
+
+    // Print the text 
+    textAlign(CENTER, CENTER);
+    textSize(12);
+    text(playerData.get(i).titles, x, textY);
+  }
+
+  // Draw the vertical axis
+  line(border, border, border, height - border);
+
+  float verticalDataGap = vertDataRange / verticalIntervals;
+  float verticalWindowRange = height - (border * 2.0f);
+  float verticalWindowGap = verticalWindowRange / verticalIntervals; 
+  for (int i = 0; i <= verticalIntervals; i ++)
+  {
+    float y = (height - border) - (i * verticalWindowGap);
+    line(border - tickSize, y, border, y);
+    float hAxisLabel = verticalDataGap * i;
+
+    textAlign(RIGHT, CENTER);  
+    text((int)hAxisLabel, border - (tickSize * 2.0f), y);
   }
 }
 
