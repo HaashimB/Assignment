@@ -1,13 +1,13 @@
 # Assignment
 Object Orientated Programming Assignment 1
 
-Steam Player statistics for the top 100 steam games.
+My data is the top 10 steam games in terms of their player bases.
 
-There will be a menu with several options for different visualisations of the data.
+There are two graphs, a trendline and a unique circle graph.
 
-Data is shown in a bar chart.
+Each graph has a clickable option in the main menu in the form of two circle buttons.
 
-Data is shown through the size of circles, the user can zoom and find any circle they want.
-If clicked additional data will be shown about the game.
+In the Circle Graph the data is shown through the size of the different circles, each circle
+is clickable and when clicked bring you to a game screen.
 
-Other charts will be added 
+

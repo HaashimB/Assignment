@@ -205,6 +205,9 @@ void draw()
     textAlign(LEFT);
     textSize(20);
     text("[M] Main Menu", width*0.01, height*0.06);
+    textSize(17);
+    text("Players\n(by ten\nthousand)",width*0.01,height*0.5);
+    text("Games",width*0.5,height*0.9);
 
 
     for (int i = 0; i < linesGlobal; i ++)
@@ -233,6 +236,7 @@ void draw()
         stroke(0, 255, 255);
         line(x1, y1, x2, y2);
       }
+      
     }
   }
 }
