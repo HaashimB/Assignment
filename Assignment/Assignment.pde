@@ -123,7 +123,7 @@ void draw()
       circleOutline2 = color(0, 100, 230);
       textcol1 = color(0, 100, 230);
     }
-    if (mouseX>width/2-25 && mouseX<width/2+25 && mouseY>height/5-25 && mouseY<height/5+25)//Easter Egg
+    if (mouseX>width/2+40 && mouseX<width/2+90 && mouseY>height/5+40 && mouseY<height/5+90)//Easter Egg
     {
       image(h3, 0, 0);
       h3.resize(width, height);
@@ -146,11 +146,12 @@ void draw()
     fill(255);
     textAlign(CENTER);
     textSize(30);
-    text("Top Steam Games By Player Base", width/2, height/25);
+    text("Top Steam Games By Player Base - Circle Graph", width/2, height/25);
     textAlign(LEFT);
     textSize(20);
     text("[I] Info", width*0.01, height*0.03);
     text("[M] Main Menu", width*0.01, height*0.06);
+    text("[C] Close Window", width*0.01, height*0.09);
     player.pause();
     player.rewind();
     update1(mouseX, mouseY);
@@ -184,9 +185,11 @@ void draw()
   {
     player.pause();
     player.rewind();
-    background(200);
+    background(100);
     textSize(30);
-    text("Top Steam Games By Player Base", width/2, height/25);
+    fill(255);
+    textAlign(CENTER);
+    text("Top Steam Games By Player Base - Line Graph", width/2, height/25);
     textAlign(LEFT);
     textSize(20);
     text("[M] Main Menu", width*0.01, height*0.06);
@@ -310,8 +313,8 @@ void infoScreen()
   text("Information", width/2+150, height/2+20);
   textSize(12);
   textAlign(LEFT);
-  text("Welcome, each circle represents a different game, the\nbigger the circle the bigger that game's player base", width/2+10, height/2+60);
-  text("Click a circle to see what game it represents.\nPress the right arrow key to close the game's window.", width/2+10, height/2+90);
+  text("Welcome, each circle represents a different game, the\nbigger the circle, the bigger that game's player base", width/2+10, height/2+60);
+  text("Click a circle to see what game it represents.\nPress 'C' to close the game's window.", width/2+10, height/2+90);
   infoClose = 1;
 }
 void gameScreen()
@@ -527,23 +530,22 @@ void keyPressed()
         infoClose = 0;
       }
     }
-    if (game!=10);
+    if (game!=10)
     {
-      if (key == CODED)
+      if (key == 'c')
       {
-        if (keyCode == RIGHT)
-        {
-          //screenBack = true;
-          game = 10;
-        }
+        game = 10;
       }
     }
   }
   if (screen ==1 || screen == 2)
   {
-    if (key == 'm')
+    if (infoClose == 0)
     {
-      screen = 0;
+      if (key == 'm')
+      {
+        screen = 0;
+      }
     }
   }
 }
