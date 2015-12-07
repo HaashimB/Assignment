@@ -32,12 +32,12 @@ void setup()
   }
 
   steam = loadImage("steam.jpg");
-
+  h3 = loadImage("h3.jpg");
   circleColor = color(255);
-  circleX[0] = width*0.8;
-  circleY[0] = height*0.6;
-  circleX[1] = width*0.4;
-  circleY[1] = height*0.6;
+  circleX = width*0.5;
+  circleY = height*0.8;
+  circleA = width*0.3;
+  circleB = height*0.8;
   ellipseMode(CENTER);
 }
 
@@ -53,22 +53,23 @@ float[] r;
 float[] g;
 float[] b;
 float x, y, z;
-PImage steam;
+PImage steam, h3;
 PImage pic;
 float screenSize;
-float[] circleX;
-float[] circleY;  // Position of circle button  
+float circleX, circleA;
+float circleY, circleB;  // Position of circle button  
 int circleSize = 93;   // Diameter of circle
-color circleColor, circleColor1, circleOutline;
-boolean[] circleOver = new boolean[2];
+int circleSize1 = 93;
+color circleColor, circleColor1, circleColor2, circleOutline, circleOutline2;
+boolean circleOver, circleOver1;
 boolean[] onCircle = new boolean[10];
 int info = 0;
 int infoClose = 0;
 boolean circleClicked;
+color textcol, textcol1;
 void draw()
 {
 
-  update(mouseX, mouseY);
   if (circleClicked)
   {
     screenSize = width*0.7;
@@ -77,6 +78,8 @@ void draw()
 
   if (screen == 0)
   {
+    update(mouseX, mouseY);
+    update2(mouseX, mouseY);
     stopMusic();
     game = 10;
     player.play();
@@ -88,26 +91,54 @@ void draw()
     text("Main Menu", width/2, height/8);
 
     noStroke();
-    for (int i = 0; i < 2; i++)
+    if (circleOver) 
     {
-      if (circleOver[i]) 
+      circleColor = color(0, 100, 230);
+      circleOutline = color(200, 230, 255);
+      textcol = color(215, 230, 240);
+      if (mousePressed)
       {
-        circleColor = color(0, 100, 230);
-        circleOutline = color(200, 230, 255);
-        if (mousePressed)
-        {
-          screen = 1;
-        }
-      } else 
-      {
-        circleColor = color(215, 230, 240);
-        circleOutline = color(0, 100, 230);
+        screen = 1;
       }
-
-      stroke(circleOutline);
-      fill(circleColor);
-      ellipse(circleX[i], circleY[i], circleSize, circleSize);
     }
+    if (circleOver1)
+    {
+      circleColor2 = color(0, 100, 230);
+      circleOutline2 = color(200, 230, 255);
+      textcol1 = color(215, 230, 240);
+      if (mousePressed)
+      {
+        screen = 2;
+      }
+    } 
+    if (!circleOver)
+    {
+      circleColor = color(215, 230, 240);
+      circleOutline = color(0, 100, 230);
+      textcol = color(0, 100, 230);
+    } 
+    if (!circleOver1)
+    {
+      circleColor2 = color(215, 230, 240);
+      circleOutline2 = color(0, 100, 230);
+      textcol1 = color(0, 100, 230);
+    }
+    if (mouseX>width/2-25 && mouseX<width/2+25 && mouseY>height/5-25 && mouseY<height/5+25)//Easter Egg
+    {
+      image(h3, 0, 0);
+      h3.resize(width, height);
+    }
+    stroke(circleOutline);
+    fill(circleColor);
+    ellipse(circleX, circleY, circleSize, circleSize);
+    fill(textcol);
+    textSize(20);
+    text("Circle\nGraph", width*0.5, height*0.79);
+    stroke(circleOutline2);
+    fill(circleColor2);
+    ellipse(circleA, circleB, circleSize1, circleSize1);
+    fill(textcol1);
+    text("Line\nGraph", width*0.3, height*0.79);
   }
   if (screen == 1)
   {
@@ -149,6 +180,18 @@ void draw()
     popMatrix();
   }
 
+  if (screen == 2)
+  {
+    player.pause();
+    player.rewind();
+    background(200);
+    textSize(30);
+    text("Top Steam Games By Player Base", width/2, height/25);
+    textAlign(LEFT);
+    textSize(20);
+    text("[M] Main Menu", width*0.01, height*0.06);
+  }
+
   if (info == 1)
   {
     pushMatrix();
@@ -173,19 +216,27 @@ void readInCircleData()
 
 void update(int x, int y) 
 {
-  boolean circleChecker1 = false;
-  for (int i = 0; i<2; i++);
+
+  if (overCircle(circleX, circleY, circleSize))
   {
-    circleChecker1 =  overCircle(circleX[i], circleY[i], circleSize);
-    if (circleChecker1)
-    {
-      circleOver[i] = true;
-    } else
-    {
-      circleOver[i] = false;
-    }
+    circleOver = true;
+  } else
+  {
+    circleOver = false;
   }
 }
+
+void update2(int x, int y) 
+{
+
+  if (overCircle(circleA, circleB, circleSize1))
+  {
+    circleOver1 = true;
+  } else
+  {
+    circleOver1 = false;
+  }
+} 
 
 boolean overCircle(float x, float y, int diameter)
 {
@@ -467,10 +518,6 @@ void keyPressed()
 {
   if ( screen == 1)
   {
-    if (key == 'm')
-    {
-      screen = 0;
-    }
     if (key == 'i' || key == 'I')
     {
       info = 1;
@@ -490,6 +537,13 @@ void keyPressed()
           game = 10;
         }
       }
+    }
+  }
+  if (screen ==1 || screen == 2)
+  {
+    if (key == 'm')
+    {
+      screen = 0;
     }
   }
 }
